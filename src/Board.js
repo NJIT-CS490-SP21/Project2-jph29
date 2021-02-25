@@ -1,5 +1,5 @@
 import './Board.css';
-
+import { Sqare } from './sqaure.js';
 export function MakeBoard(){
   return(
 <div class="board">
