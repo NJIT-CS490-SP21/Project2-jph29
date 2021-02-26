@@ -1,34 +1,18 @@
+import Square from "./square";
 import './Board.css';
-import { Square } from './square.js';
+
+
+export const Board = ({ squares, onClick }) => (
+  <div className="board">
+    {squares.map((square, i) => (
+      <Square key={i} value={square} onClinck = {() => onClick(i)} />
+    ))}
+    </div>
+  );
+export default Board;
+
+
 export function MakeBoard(){
-  function renderSquare(i){
-    return <Square value={this.props.square[i]} 
-          onClick={()=>this.props.squares(i)}
-    />
-  }
-  
-  function render(){
-    return(
-      <div>
-        <div className="border-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="border-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="border-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      
-      </div>
-    );
-  }
   
   return(
 <div class="board">
@@ -43,5 +27,3 @@ export function MakeBoard(){
   <div class="box">X</div>
 </div>);
 }
-
-
