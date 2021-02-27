@@ -75,7 +75,7 @@ const Game = () => {
       
       <div className="info-wrapper">
         <div>
-          <h3>History</h3>
+          <h3>Match History</h3>
           {renderMoves()}
         </div>
         <h3>{winner ? "Winner: " + winner : ""}</h3>
