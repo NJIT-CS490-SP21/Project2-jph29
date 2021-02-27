@@ -4,57 +4,11 @@ import MakeBoard from "./Board";
 import io from 'socket.io-client';
 
 const socket = io(); // Connects to socket connection
-function App() {
-  const [messages, setMessages] = useState([]); // State variable, list of messages
-  const inputRef = useRef(null); // Reference to <input> element
-
-  function onClickButton() {
-    if (inputRef != null) {
-      const message = inputRef.current.value;
-      // If your own client sends a message, we add it to the list of messages to 
-      // render it on the UI.
-      setMessages(prevMessages => [...prevMessages, message]);
-      socket.emit('chat', { message: message });
-    }
-  }
-
-  // The function inside useEffect is only run whenever any variable in the array
-  // (passed as the second arg to useEffect) changes. Since this array is empty
-  // here, then the function will only run once at the very beginning of mounting.
-  useEffect(() => {
-    // Listening for a chat event emitted by the server. If received, we
-    // run the code in the function that is passed in as the second arg
-    socket.on('chat', (data) => {
-      console.log('Chat event received!');
-      console.log(data);
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
-      setMessages(prevMessages => [...prevMessages, data.message]);
-    });
-  }, []);
-}
-
-
-
-
 const Game = () => {
-  const [gameState, setGameState] = useState([]); // State variable, list of messages
-  const inputRef = useRef(null);
   
-  const onClickButton = () => {
-    if (inputRef != null){
-      setGameState(prevGameState => [...prevGameState, gameState]);
-      socket.emit('game', { gameState: gameState});
-    }
-  }
-  useEffect(() => {
-    socket.on('game', (data) => {
-      console.log('Game State updated')
-      console.log(data);
-      
-      setGameState(prevGameState => [...prevGameState, data.game]);
-    });
-  }, []);
+  
+  const [gameStates, setGameStates] = useState([]); // State variable, list of messages
+  const inputRef = useRef(null);
   
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [stepNumber, setStepNumber] = useState(0);
@@ -73,7 +27,29 @@ const Game = () => {
     setHistory([...historyPoint, squares]);
     setStepNumber(historyPoint.length);
     setXisNext(!xIsNext);
+    //update board for multiple browsers
+    if (inputRef != null){
+      const gameState = squares;
+      setGameStates(gameState => [...gameState]);
+      socket.emit('game', {gameState: gameState});
+      return gameStates;
+    }
   };
+   // The function inside useEffect is only run whenever any variable in the array
+  // (passed as the second arg to useEffect) changes. Since this array is empty
+  // here, then the function will only run once at the very beginning of mounting.
+  useEffect(() => {
+    // Listening for a chat event emitted by the server. If received, we
+    // run the code in the function that is passed in as the second arg
+    socket.on('game', (data) => {
+      console.log('Game State Updated!');
+      console.log(data);
+      // If the server sends a message (on behalf of another client), then we
+      // add it to the list of messages to render it on the UI.
+      setGameStates(gameState => [...gameState]);
+      return gameStates;
+    });
+  }, []);
 
   const jumpTo = (step) => {
     setStepNumber(step);
@@ -94,6 +70,7 @@ const Game = () => {
     <>
       <h1>Jaymee's Tic Tac Toe Board</h1>
       <MakeBoard squares={history[stepNumber]} onClick={handleClick}/>
+      
       
       <div className="info-wrapper">
         <div>
