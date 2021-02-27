@@ -28,6 +28,7 @@ const Game = () => {
     setStepNumber(historyPoint.length);
     setXisNext(!xIsNext);
     //update board for multiple browsers
+    //#TODO: Multiplayer funcitonality
     if (inputRef != null){
       const gameState = squares;
       setGameStates(gameState => [...gameState]);
