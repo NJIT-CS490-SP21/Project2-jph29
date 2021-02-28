@@ -14,11 +14,6 @@
 2. Run command in another terminal, `cd` into the project directory, and run `npm run start`
 3. Preview web page in browser '/'
 
-## Deploy to Heroku
-*Don't do the Heroku step for assignments, you only need to deploy for Project 2*
-1. Create a Heroku app: `heroku create --buildpack heroku/python`
-2. Add nodejs buildpack: `heroku buildpacks:add --index 1 heroku/nodejs`
-3. Push to Heroku: `git push heroku main`
 
 ## Known Problems
 1. Currently does not support multiple players across browsers. I will address this by returning to the chat app and applying the same live process to the tic tac toe app.
