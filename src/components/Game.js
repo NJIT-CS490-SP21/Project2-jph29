@@ -7,10 +7,9 @@ const socket = io(); // Connects to socket connection
 const Game = () => {
   
   
-  const [gameStates, setGameStates] = useState([]); // State variable, list of messages
+  //const [gameStates, setGameStates] = useState([]); 
   const inputRef = useRef(null);
-  
-  const [boardHistory, setBoardHistory] = useState([Array(9).fill(null)]);
+  const [boardHistory, setBoardHistory] = useState([Array(9).fill(null)]);//list of all board instances in a given match
   const [stepNumber, setStepNumber] = useState(0);
   const [xIsNext, setXisNext] = useState(true);
   const winner = calculateWinner(boardHistory[stepNumber]);
@@ -18,46 +17,52 @@ const Game = () => {
 
   const handleClick = (i) => {
     const historyPoint = boardHistory.slice(0, stepNumber + 1);
-    const currentBoard = historyPoint[stepNumber];
-    const squares = [...currentBoard];
+    const currentBoard = historyPoint[stepNumber];//grabs the current board
+    const boardCopy = [...currentBoard];// makes a copy of the current board
     // return if won or occupied
-    if (winner || squares[i]) return;
+    if (winner || boardCopy[i]) return;
     // select square
-    squares[i] = xO;
-    setBoardHistory([...historyPoint, squares]);
+    boardCopy[i] = xO;//replaces blank square with either an X or an O
+    setBoardHistory([...historyPoint, boardCopy]);//appends the list of board instances with the current board configuration
     setStepNumber(historyPoint.length);
     setXisNext(!xIsNext);
+    
+    console.log('Game State Updated!');
+    console.log(boardHistory)
+    console.log(currentBoard)
+    console.log(xO)
+    
+    
     //update board for multiple browsers
     //#TODO: Multiplayer funcitonality
     if (inputRef != null){
-      socket.emit('game', {boardHistory: boardHistory});
-      return historyPoint[stepNumber];
+      socket.emit('game', {boardHistory: boardHistory, boardCopy:boardCopy /*current board*/, i:i /*index*/,xO:xO,historyPoint:historyPoint,xNext:!xIsNext});
+      
+      return boardCopy;
     }
   };
-   // The function inside useEffect is only run whenever any variable in the array
-  // (passed as the second arg to useEffect) changes. Since this array is empty
-  // here, then the function will only run once at the very beginning of mounting.
-  useEffect((i) => {
-    
-    // Listening for a chat event emitted by the server. If received, we
-    // run the code in the function that is passed in as the second arg
+   
+  useEffect(() => {
     socket.on('game', (data) => {
-    const historyPoint = boardHistory.slice(0, stepNumber + 1);
-    const currentBoard = historyPoint[stepNumber];
-    const squares = [...currentBoard];
+   // console.log(data.boardHistory);
+    //console.log(boardHistory)
+    const historyPoint = data.historyPoint;// TODO:fix history point . length
+    //const currentBoard = historyPoint[stepNumber];
     
-    squares[i] = xO;
-    setBoardHistory([...historyPoint, squares]);
-    setStepNumber(historyPoint.length);
-    setXisNext(!xIsNext);
-    if (winner || squares[i]) return;
-    console.log('Game State Updated!');
-    console.log(data);
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
+    const boardCopy = data.boardCopy;
+    const i = data.i;
+    setBoardHistory([...historyPoint,boardCopy])
+    setStepNumber(data.historyPoint.length);
+    setXisNext(data.xNext);
+    if (winner || boardCopy[i]) return;
+   // console.log('Game State Updated!');
+    //console.log(data);
+    //console.log(boardHistory)
+ 
     
-    socket.emit('game', { boardHistory: boardHistory});
-    return data.historyPoint[stepNumber];
+    
+    //socket.emit('game', { boardHistory: boardHistory,boardCopy:boardCopy,i:i,xO,xO});
+    //return boardCopy;
     });
   }, []);
 
@@ -68,7 +73,7 @@ const Game = () => {
 
   const renderMoves = () =>
     boardHistory.map((_step, move) => {
-      const destination = move ? `Go to move #${move}` : "Go to Start";
+      const destination = move ? `Go to move #${move}` : "Restart";
       return (
         <li key={move}>
           <button onClick={() => jumpTo(move)}>{destination}</button>

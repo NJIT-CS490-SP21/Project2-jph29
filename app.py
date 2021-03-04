@@ -34,7 +34,8 @@ def on_disconnect():
 @socketio.on('game')
 def on_chat(data): # data is whatever arg you pass in your emit call on client
     print(str(data))
-    # This emits the 'chat' event from the server to all clients except for
+    
+    # This emits the game event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('game',  data, broadcast=True, include_self=False)
 
