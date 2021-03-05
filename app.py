@@ -39,6 +39,11 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
     # the client that emmitted the event that triggered this function
     socketio.emit('game',  data, broadcast=True, include_self=False)
 
+@socketio.on('logIn')
+def on_log(data):
+    print(str(data))
+    
+    socketio.emit('logIn', data, broadcast=True, include_self=False)
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     app,
