@@ -102,7 +102,7 @@ const Game = () => {
     });
   }, []);
   //USE EFFECT FUNCTION TO DISPLAY LEADERBOARD
-  useEffect(()=> {
+/*  useEffect(()=> {
     socket.on('userList', (data) => {
       console.log('userList event received!')
       //databaseCopy = [...userDatabase]
@@ -111,7 +111,7 @@ const Game = () => {
       console.log(userDatabase)
       
     });
-  }, []);
+  }, []);*/
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);
