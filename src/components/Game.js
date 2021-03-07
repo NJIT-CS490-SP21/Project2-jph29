@@ -112,7 +112,6 @@ const Game = () => {
       
     });
   }, []);
-
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);
