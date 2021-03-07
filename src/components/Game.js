@@ -19,6 +19,8 @@ const Game = () => {
   const userRef = useRef(null)
   const [currUser,setCurrUser] =useState('')
   
+  const [userDatabase, setUserDatabase] = useState([])
+  
   //LOG_IN FUNCITON
   const updateUsers = () => {
     
@@ -44,7 +46,7 @@ const Game = () => {
      
     }
     setCurrUser(userName)
-    socket.emit('logIn', {newUsers: newList})
+    socket.emit('logIn', {newUsers: newList,userName:userName})
     console.log(userRef.current.value)
     console.log(userList)
     //#TODO: 
@@ -99,6 +101,18 @@ const Game = () => {
     
     });
   }, []);
+  //USE EFFECT FUNCTION TO DISPLAY LEADERBOARD
+  useEffect(()=> {
+    socket.on('userList', (data) => {
+      console.log('userList event received!')
+      //databaseCopy = [...userDatabase]
+      setUserDatabase(data['users'])
+      console.log(data)
+      console.log(userDatabase)
+      
+    });
+  }, []);
+
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);
@@ -127,6 +141,10 @@ const Game = () => {
           <div>
            <h3>Match History</h3>
            {renderMoves()}
+          </div>
+          <div>
+          <h3>All Users (History)</h3>
+          <button >Show Leaderboard </button>
           </div>
         </div>
       </div>

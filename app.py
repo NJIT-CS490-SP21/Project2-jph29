@@ -3,6 +3,9 @@ from flask import Flask, send_from_directory, json, session
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 app = Flask(__name__, static_folder='./build/static')
 # Point SQLAlchemy to your Heroku database
@@ -14,7 +17,8 @@ db = SQLAlchemy(app)
 
 # IMPORTANT: This must be AFTER creating db variable to prevent
 # circular import issues
-from models import Person
+import models
+db.create_all()
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -53,11 +57,23 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 @socketio.on('logIn')
 def on_log(data):
     print(str(data))
-    
+    exists = db.session.query(db.exists().where(models.Person.username == data['userName'])).scalar()
+    if exists:
+        new_user = models.Person(username=data['userName'], games_won=0)
+        db.session.add(new_user)
+        db.session.commit()
+    all_people = models.Person.query.all()
+    users = []
+    for person in all_people:
+        users.append(person.username)
+    socketio.emit('userList',{users:users})
     socketio.emit('logIn', data, broadcast=True, include_self=False)
+    
+    
 # Note that we don't call app.run anymore. We call socketio.run with app arg
-socketio.run(
+if __name__ == "__main__":
+    socketio.run(
     app,
     host=os.getenv('IP', '0.0.0.0'),
     port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
-)
+    )
