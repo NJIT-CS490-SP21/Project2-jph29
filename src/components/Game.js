@@ -15,6 +15,7 @@ const Game = () => {
   const [xIsNext, setXisNext] = useState(true);
   const winner = calculateWinner(boardHistory[stepNumber]);
   const xO = xIsNext ? "X" : "O";
+  const [didUserWin, setDidUserWin] = useState(false)
   
   const [userList, setUserList] = useState({'X':'', 'O':'', 'Spectators':[]})
   const userRef = useRef(null)
@@ -59,18 +60,29 @@ const Game = () => {
     const historyPoint = boardHistory.slice(0, stepNumber + 1);
     const currentBoard = historyPoint[stepNumber];//grabs the current board
     const boardCopy = [...currentBoard];// makes a copy of the current board
-    // return if won or occupied
-    if (winner || boardCopy[i]) return;
+    // return if won or occupied // updated to increment winner score
+    if (winner || boardCopy[i]){
+      return;
+    }
     // select square
     boardCopy[i] = xO;//replaces blank square with either an X or an O
     setBoardHistory([...historyPoint, boardCopy]);//appends the list of board instances with the current board configuration
     setStepNumber(historyPoint.length);
-    setXisNext(!xIsNext);
     
+    if (calculateWinner(boardCopy)){
+      const winningUser = userList[xO]
+      socket.emit('winner', {winner:winningUser})
+      console.log('Win event Initiated!')
+      console.log(winningUser)
+    }
+    console.log(xO)
+    setXisNext(!xIsNext);
+
     console.log('Game State Updated!');
     console.log(boardHistory)
     console.log(currentBoard)
     console.log(xO)
+    
 
     if (inputRef != null){
       socket.emit('game', {boardHistory: boardHistory, boardCopy:boardCopy /*current board*/, i:i /*index*/,xO:xO,historyPoint:historyPoint,xNext:!xIsNext});
@@ -118,6 +130,9 @@ const Game = () => {
   const handleLeaderBoard= () => {
     setCheckClicked(!checkClicked)
   }
+  //FUNCTION TO INCREMENT WINNER SCORE
+  
+
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);

@@ -72,10 +72,28 @@ def on_log(data):
     print(users)
     print(all_scores)
     #print(exists)
-    #socketio.emit('logIn', data, broadcast=True, include_self=False)
+    socketio.emit('logIn', data, broadcast=True, include_self=False)
+    socketio.emit('userList',{'users':users})
+
+@socketio.on('winner')
+def on_win(data):
+    print('WIN EVENT RECIEVED!')
+    print(str(data))
+    Winner = db.session.query(models.Gamer).filter_by(username =data['winner']).first()  
+    Winner.gameswon = Winner.gameswon + 1
+    db.session.commit()
+    
+    all_scores = db.session.query(models.Gamer).order_by(models.Gamer.gameswon.desc()).all()
+    users = []
+    white_space = '             '
+   
+    for person in all_scores:
+        users.append(person.username + white_space + str(person.gameswon))
     socketio.emit('userList',{'users':users})
     
-# Note that we don't call app.run anymore. We call socketio.run with app arg
+    
+    
+    # Note that we don't call app.run anymore. We call socketio.run with app arg
 if __name__ == "__main__":
     socketio.run(
     app,
