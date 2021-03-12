@@ -131,8 +131,6 @@ const Game = () => {
     setCheckClicked(!checkClicked)
   }
   //FUNCTION TO INCREMENT WINNER SCORE
-  
-
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);
