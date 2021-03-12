@@ -1,10 +1,10 @@
 from app import db
 
-class Person(db.Model):
+class Gamer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    games_won = db.Column(db.Integer, unique=True, nullable=False)
+    gameswon = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Person %r>' % self.username
+        return '<Gamer %r>' % self.username
       

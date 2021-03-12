@@ -56,19 +56,24 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 @socketio.on('logIn')
 def on_log(data):
     print(str(data))
-    socketio.emit('logIn', data, broadcast=True, include_self=False)
-    exists = db.session.query(db.exists().where(models.Person.username == data['userName'])).scalar()
-    if exists:
-        new_user = models.Person(username=data['userName'], games_won=0)
+    exists = db.session.query(db.exists().where(models.Gamer.username == data['userName'])).scalar()
+    if not exists:
+        new_user = models.Gamer(username=data['userName'], gameswon=0)
         db.session.add(new_user)
         db.session.commit()
-    all_people = models.Person.query.all()
+    #all_people = models.Gamer.query.all()
+    all_scores = db.session.query(models.Gamer).order_by(models.Gamer.gameswon.desc()).all()
     users = []
-    for person in all_people:
-        users.append(person.username)
-    print(models.Person)
-    
-    #socketio.emit('userList',{users:users})
+    white_space = '             '
+   
+    for person in all_scores:
+        users.append(person.username + white_space + str(person.gameswon))
+    #print(models.Gamer)
+    print(users)
+    print(all_scores)
+    #print(exists)
+    #socketio.emit('logIn', data, broadcast=True, include_self=False)
+    socketio.emit('userList',{'users':users})
     
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect  } from "react";
 import { calculateWinner } from "../helper";
 import MakeBoard from "./Board";
 import io from 'socket.io-client';
+import { ListItem } from '../ListItem.js';
 
 const socket = io(); // Connects to socket connection
 const Game = () => {
@@ -18,6 +19,7 @@ const Game = () => {
   const [userList, setUserList] = useState({'X':'', 'O':'', 'Spectators':[]})
   const userRef = useRef(null)
   const [currUser,setCurrUser] =useState('')
+  const [checkClicked,setCheckClicked] = useState(false);
   
   const [userDatabase, setUserDatabase] = useState([])
   
@@ -101,17 +103,21 @@ const Game = () => {
     
     });
   }, []);
-  //USE EFFECT FUNCTION TO DISPLAY LEADERBOARD
-/*  useEffect(()=> {
+  //USE EFFECT FUNCTION TO SET LEADERBOARD
+  useEffect(()=> {
     socket.on('userList', (data) => {
       console.log('userList event received!')
       //databaseCopy = [...userDatabase]
-      setUserDatabase(data['users'])
+      setUserDatabase(...userDatabase,data['users'])
       console.log(data)
       console.log(userDatabase)
       
     });
-  }, []);*/
+  }, []);
+  //ON CLICK FUNCTION TO DISPLAY LEADERBOARD
+  const handleLeaderBoard= () => {
+    setCheckClicked(!checkClicked)
+  }
   //HELPER FUNCITON FOR RENDER MOVES
   const jumpTo = (step) => {
     setStepNumber(step);
@@ -128,11 +134,12 @@ const Game = () => {
       );
     });
   console.log(userList)
+  console.log(userDatabase)
   return (
     <>
       <h1>Jaymee's Tic Tac Toe Board</h1>
       <div>
-      <div>{currUser === '' ?<div> Enter username here:  <input ref={userRef} type="text" /> 
+      <div>{currUser === '' ?<div> Enter Username Here (Username is case sensitive):  <input ref={userRef} type="text" /> 
       <button onClick={updateUsers}>Submit</button></div>
       :<div><h2>{winner ? "Winner: " + winner : ""}
         <h4>{!winner && boardHistory.length===10? "The Game Is a Draw": "Next Player: " + xO}</h4></h2><MakeBoard squares={boardHistory[stepNumber]} onClick={handleClick}/> 
@@ -142,8 +149,12 @@ const Game = () => {
            {renderMoves()}
           </div>
           <div>
-          <h3>All Users (History)</h3>
-          <button >Show Leaderboard </button>
+            <h3>All Users (History)</h3>
+            {checkClicked === false?<button onClick={handleLeaderBoard}>Show Leaderboard </button>:<button onClick={handleLeaderBoard}>Hide Leaderboard </button>}
+            <div>{checkClicked === true?
+              <div><ul>{userDatabase.map((item,index) => <ListItem key={index} name={item} /> )}</ul></div>
+              :''}
+            </div>
           </div>
         </div>
       </div>
