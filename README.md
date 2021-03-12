@@ -16,9 +16,9 @@
 
 
 ## Known Problems
-1. Currently does not support multiple players across browsers. I will address this by returning to the chat app and applying the same live process to the tic tac toe app.
-2. App currently does not support user log in, I will address this by taking more time to research conditional rendering and useStates.
+1. Users name is currently not highlighted on the leaderboard.
 
 ##Technicle Issues
 1. At the beginning of the project, I could not get the board to render properly in a clickable format. I addressed this by researching the react functionalities, and stumbling upon reacts own guide for tic tac toe (using classes)
 2. I couldn't get the game logic to funciton properly (win conditions). I fixed this through the react hooks tutorial on how to pass the gamestate back to my win conditions file.
+3. At the beginning of milestone 2, My app did not have proper database persistence, where I could not get tables to be set nor add new users. I fixed this by researching the sql alchemy documentation.
