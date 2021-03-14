@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Game from './Game';
+import { render, screen, fireEvent } from "@testing-library/react";
+import Game from "./Game";
 /*
 JEST UNIT TEST FOR CLIENT-SIDE APPLICATION
     1. 3 REACT COMPONENT TESTS
@@ -10,32 +10,29 @@ JEST UNIT TEST FOR CLIENT-SIDE APPLICATION
         Props changing - if the props for a component change, does the HTML update automatically?
 */
 
-
 test("Login button disappears", () => {
-    render(<Game />);
-    
-    const joinButtonElement = screen.getByText('Submit')
-    //expect(joinButtonElement).toBeInTheDocument();
-    
-    fireEvent.click(joinButtonElement);
-    //expect(joinButtonElement).toBeInTheDocument();
+  render(<Game />);
+
+  const joinButtonElement = screen.getByText("Submit");
+  //expect(joinButtonElement).toBeInTheDocument();
+
+  fireEvent.click(joinButtonElement);
+  //expect(joinButtonElement).toBeInTheDocument();
 });
 
-
 test("Turn Changes", () => {
-    const boardElement = screen.getByRole('MakeBoard', );
-    
-    const xPlayerElement = screen.getByText("Next Player X");
-   expect(xPlayerElement).toBeInTheDocument();
-   fireEvent.click(boardElement)
-   const oPlayerElement = screen.getByText('Next Player: O');
-   expect(oPlayerElement).toBeInTheDocument();
-    
+  const boardElement = screen.getByRole("MakeBoard");
+
+  const xPlayerElement = screen.getByText("Next Player X");
+  expect(xPlayerElement).toBeInTheDocument();
+  fireEvent.click(boardElement);
+  const oPlayerElement = screen.getByText("Next Player: O");
+  expect(oPlayerElement).toBeInTheDocument();
 });
 
 test("Show Leaderboard", () => {
-    const leaderBoardElement = screen.getByText("Show Leaderboard");
-    expect(leaderBoardElement).toBeInTheDocument;
-    fireEvent.click(leaderBoardElement);
-    expect(leaderBoardElement).not.toBeInTheDocument;
+  const leaderBoardElement = screen.getByText("Show Leaderboard");
+  expect(leaderBoardElement).toBeInTheDocument;
+  fireEvent.click(leaderBoardElement);
+  expect(leaderBoardElement).not.toBeInTheDocument;
 });
