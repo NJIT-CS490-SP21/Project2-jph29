@@ -44,13 +44,17 @@ def index(filename):
 @SOCKETIO.on('connect')
 def on_connect():
     '''Function to show that a user has connected'''
+    #hello='User connected!'
     print('User connected!')
+    #return hello
 
 
 @SOCKETIO.on('disconnect')
 def on_disconnect():
     '''Function to show that a user has disconnected'''
+    #goodbye='User disconnected!'
     print('User disconnected!')
+    #return goodbye
 
 
 @SOCKETIO.on('game')

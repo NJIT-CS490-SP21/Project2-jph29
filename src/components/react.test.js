@@ -14,10 +14,10 @@ test("Login button disappears", () => {
   render(<Game />);
 
   const joinButtonElement = screen.getByText("Submit");
-  //expect(joinButtonElement).toBeInTheDocument();
+  expect(joinButtonElement).toBeInTheDocument();
 
   fireEvent.click(joinButtonElement);
-  //expect(joinButtonElement).toBeInTheDocument();
+  expect(joinButtonElement).toBeInTheDocument();
 });
 
 test("Turn Changes", () => {

@@ -7,3 +7,69 @@ UNMOCKED UNIT TEST FOR SERVER-SIDE APPLICATION
 
 
 '''
+import unittest
+import unittest.mock as mock
+from unittest.mock import patch
+import os 
+import sys
+
+sys.path.append(os.path.abspath('../../'))
+from app import on_connect, on_disconnect
+import models
+
+KEY_INPUT = "jaymee"
+KEY_EXPECTED = "expected"
+NEW_KEY_EXPECTED = "expected2"
+INITIAL_USERNAME = 'user1'
+
+class updateConnectTestCase(unittest.TestCase):
+    #print("nothing to see")
+    def setUp(self):
+        #print('setup')
+        self.success_test_params = [
+            {
+                KEY_INPUT: '',
+                KEY_EXPECTED: 'User connected!',
+                NEW_KEY_EXPECTED: 'User disconnected!',
+            },
+            
+        ]
+        
+    def test_success(self):
+        #print("Testing")
+        for test in self.success_test_params:
+            actual_result = on_connect()
+            print(actual_result)
+            expected_result = test[KEY_EXPECTED]
+            print(expected_result)
+            #self.assertEqual(len(actual_result), len(expected_result))
+            self.assertEqual(actual_result, expected_result)
+            
+class updateDisconnectTestCase(unittest.TestCase):
+    #print("nothing to see")
+    def setUp(self):
+        #print('setup')
+        self.success_test_params = [
+            {
+                KEY_INPUT: '',
+                KEY_EXPECTED: 'User disconnected!',
+            },
+            
+        ]
+    def test_success2(self):
+        #print("Testing")
+        for test in self.success_test_params:
+            print("buffer1")
+            actual_result = on_disconnect()
+            print("buffer2")
+            print(actual_result)
+            print("buffer3")
+            expected_result = test[KEY_EXPECTED]
+            print("buffer4")
+            print(expected_result)
+            print("buffer5")
+            
+            #self.assertEqual(len(actual_result), len(expected_result))
+            self.assertEqual(actual_result, expected_result)
+if __name__ == '__main__':
+    unittest.main()

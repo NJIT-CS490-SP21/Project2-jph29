@@ -14,24 +14,31 @@ import os
 import sys
 
 sys.path.append(os.path.abspath('../../'))
-from app import on_log
+from app import on_log, on_win
 import models
 
 KEY_INPUT = "jaymee"
 KEY_EXPECTED = "expected"
 
 INITIAL_USERNAME = 'user1'
+INITIAL_SCORE = 0
 
 class AddUserTestCase(unittest.TestCase):
     def setup(self):
-            self.success_test_params = [
-                {
-                    KEY_INPUT: 'jaymee',
-                    KEY_EXPECTED: [INITIAL_USERNAME, 'jaymee'],
-                },
-            ]
-            initial_person = models.Gamer(username=INITIAL_USERNAME, gameswon=0)
-            self.initial_db_mock = [initial_person]
+        
+        self.success_test_params = [
+            {
+                KEY_INPUT: 'jaymee',
+                KEY_EXPECTED: [INITIAL_USERNAME, 'jaymee'],
+            },
+            {
+                KEY_INPUT: "Jodi",
+                KEY_EXPECTED: [INITIAL_USERNAME, "Jodi"],
+            },
+        ]
+        
+        initial_person = models.Gamer(username=INITIAL_USERNAME, gameswon=0)
+        self.initial_db_mock = [initial_person]
     
     def mocked_db_session_add(self, username):
         self.initial_db_mock.append(username)
@@ -44,20 +51,63 @@ class AddUserTestCase(unittest.TestCase):
     
     def test_success(self):
         for test in self.success_test_params:
-            with patch('app.db.session.add', self.mocked_db_session_add):
-                with patch('app.db.session.commit',self.mocked_db_session_commit):
+            with patch('app.DB.session.add', self.mocked_db_session_add):
+                with patch('app.DB.session.commit',self.mocked_db_session_commit):
                     with patch('models.Gamer.query') as mocked_query:
                         mocked_query.all = self.mocked_person_query_all
-                        
+                    
                         print(self.initial_db_mock)
                         actual_result = on_log(test[KEY_INPUT])
                         print(actual_result)
                         expected_result = test[KEY_EXPECTED]
                         print(self.initial_db_mock)
                         print(expected_result)
-                        
+                    
                         self.assertEqual(len(actual_result), len(expected_result))
                         self.assertEqual(actual_result[1], expected_result[1])
+
+class UpdateWinnerTestCase(unittest.TestCase):
+    def setup(self):
+        
+        self.success_test_params = [
+            {
+                KEY_INPUT: 'jaymee',
+                KEY_EXPECTED: [INITIAL_SCORE, 1],
+            },
+            {
+                KEY_INPUT: "Jodi",
+                KEY_EXPECTED: [INITIAL_SCORE, 1],
+            },
+        ]
+        
+        initial_person = models.Gamer(username=INITIAL_USERNAME, gameswon=0)
+        self.initial_db_mock = [initial_person]
+    
+    def mocked_db_session_add(self, username):
+        self.initial_db_mock.append(username)
+    
+    def mocked_db_session_commit(self):
+        pass
+    
+    def mocked_person_query_all(self):
+        return self.initial_db_mock
+    
+    def test_success(self):
+        for test in self.success_test_params:
+            with patch('app.DB.session.commit',self.mocked_db_session_commit):
+                with patch('models.Gamer.query') as mocked_query:
+                    mocked_query.all = self.mocked_person_query_all
+                
+                    print(self.initial_db_mock)
+                    actual_result = on_win(test[KEY_INPUT])
+                    INITIAL_SCORE +=1
+                    print(actual_result)
+                    expected_result = test[KEY_EXPECTED]
+                    print(self.initial_db_mock)
+                    print(expected_result)
+                
+                    self.assertEqual(len(actual_result), len(expected_result))
+                    self.assertEqual(actual_result[1], expected_result[1])
 
 if __name__ == '__main__':
     unittest.main()
