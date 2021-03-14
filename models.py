@@ -1,9 +1,12 @@
-from app import db
+''' Module to set database columns'''
+from app import DB
 
-class Gamer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    gameswon = db.Column(db.Integer, nullable=False)
+
+class Gamer(DB.Model):
+    '''class sets table columns'''
+    id = DB.Column(DB.Integer, primary_key=True)
+    username = DB.Column(DB.String(80), unique=True, nullable=False)
+    gameswon = DB.Column(DB.Integer, nullable=False)
 
     def __repr__(self):
         return '<Gamer %r>' % self.username
