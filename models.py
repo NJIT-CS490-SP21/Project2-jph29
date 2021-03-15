@@ -1,7 +1,6 @@
 ''' Module to set database columns'''
 from app import DB
 
-
 class Gamer(DB.Model):
     '''class sets table columns'''
     id = DB.Column(DB.Integer, primary_key=True)

@@ -68,8 +68,7 @@ def on_chat(data):
 def on_log(data):
     '''Function to show that a user has logged in'''
     print(str(data))
-    exists = DB.session.query(
-        DB.exists().where(models.Gamer.username == data['userName'])).scalar()
+    exists = DB.session.query(DB.exists().where(models.Gamer.username == data['userName'])).scalar()
     if not exists:
         new_user = models.Gamer(username=data['userName'], gameswon=0)
         DB.session.add(new_user)
