@@ -40,7 +40,7 @@ def index(filename):
     '''Function to build the filename'''
     return send_from_directory('./build', filename)
 
-
+#notes
 @SOCKETIO.on('connect')
 def on_connect():
     '''Function to show that a user has connected'''
