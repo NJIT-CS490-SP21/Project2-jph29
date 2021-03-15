@@ -26,10 +26,10 @@ import models
 
 DB.create_all()
 
-CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
+cors = CORS(APP, resources={r"/*": {"origins": "*"}})
 
 SOCKETIO = SocketIO(APP,
-                    CORS_allowed_origins="*",
+                    cors_allowed_origins="*",
                     json=json,
                     manage_session=False)
 
