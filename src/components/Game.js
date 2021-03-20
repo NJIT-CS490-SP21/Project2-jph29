@@ -24,6 +24,9 @@ const Game = () => {
   
   const [userDatabase, setUserDatabase] = useState([])
   
+  //Restrict Spectators from playing
+  const [client, setClient] = useState('')
+  
   //LOG_IN FUNCITON
   const updateUsers = () => {
     
@@ -49,6 +52,7 @@ const Game = () => {
      
     }
     setCurrUser(userName)
+    setClient(userName)
     socket.emit('logIn', {newUsers: newList,userName:userName})
     console.log(userRef.current.value)
     console.log(userList)
@@ -64,10 +68,18 @@ const Game = () => {
     if (winner || boardCopy[i]){
       return;
     }
+    const newList = {...userList}
+    const spec = newList.Spectators
+    
     // select square
-    boardCopy[i] = xO;//replaces blank square with either an X or an O
-    setBoardHistory([...historyPoint, boardCopy]);//appends the list of board instances with the current board configuration
-    setStepNumber(historyPoint.length);
+    if (spec.includes(client)){return;}
+      
+      
+      boardCopy[i] = xO;//replaces blank square with either an X or an O
+      setBoardHistory([...historyPoint, boardCopy]);//appends the list of board instances with the current board configuration
+      setStepNumber(historyPoint.length);
+      setXisNext(!xIsNext);
+    
     
     if (calculateWinner(boardCopy)){
       const winningUser = userList[xO]
@@ -76,7 +88,7 @@ const Game = () => {
       console.log(winningUser)
     }
     console.log(xO)
-    setXisNext(!xIsNext);
+    
 
     console.log('Game State Updated!');
     console.log(boardHistory)
@@ -106,11 +118,16 @@ const Game = () => {
     socket.on('game', (data) => {
     const historyPoint = data.historyPoint;// TODO:fix history point . length
     
+    const newList = {...userList}
+    const spec = newList.Spectators
+    
     const boardCopy = data.boardCopy;
     const i = data.i;
+     if (!spec.includes(currUser)){
     setBoardHistory([...historyPoint,boardCopy])
     setStepNumber(data.historyPoint.length);
     setXisNext(data.xNext);
+     }
     if (winner || boardCopy[i]) return;
     
     });
@@ -148,6 +165,7 @@ const Game = () => {
     });
   console.log(userList)
   console.log(userDatabase)
+  console.log(client)
   return (
     <>
       <h1>Jaymee's Tic Tac Toe Board</h1>
@@ -155,7 +173,11 @@ const Game = () => {
       <div>{currUser === '' ?<div> Enter Username Here (Username is case sensitive):  <input ref={userRef} type="text" /> 
       <button onClick={updateUsers}>Submit</button></div>
       :<div><h2>{winner ? "Winner: " + winner : ""}
-        <h4>{!winner && boardHistory.length===10? "The Game Is a Draw": "Next Player: " + xO}</h4></h2><MakeBoard squares={boardHistory[stepNumber]} onClick={handleClick}/> 
+       
+        <h4>{!winner && boardHistory.length===10? "The Game Is a Draw": "Next Player: " + xO}</h4></h2><MakeBoard squares={boardHistory[stepNumber]} onClick={handleClick}/>
+        <h5>User List: Player X is: {userList.X}</h5> <h5>Player O is: {userList.O} Spectators </h5>
+        <h6>Spectators: {userList.Spectators}</h6>
+        
         <div className="info-wrapper">
           <div>
            <h3>Match History</h3>
