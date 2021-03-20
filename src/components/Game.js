@@ -175,7 +175,7 @@ const Game = () => {
       :<div><h2>{winner ? "Winner: " + winner : ""}
        
         <h4>{!winner && boardHistory.length===10? "The Game Is a Draw": "Next Player: " + xO}</h4></h2><MakeBoard squares={boardHistory[stepNumber]} onClick={handleClick}/>
-        <h5>User List: Player X is: {userList.X}</h5> <h5>Player O is: {userList.O} Spectators </h5>
+        <h5>User List: Player X is: {userList.X}</h5> <h5>Player O is: {userList.O}</h5>
         <h6>Spectators: {userList.Spectators}</h6>
         
         <div className="info-wrapper">
