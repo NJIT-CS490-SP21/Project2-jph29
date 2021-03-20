@@ -1,0 +1,7 @@
+[MASTER]
+disable=
+    E1101, # no-member, 
+    C0413, # wrong-import-position
+    W1508, # invalid-envvar-default
+    R0903, 
+    W0603, # (global-statement)
