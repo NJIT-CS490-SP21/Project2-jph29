@@ -1,6 +1,5 @@
+#Link to Deployed App: jaymee-tictactoe.herokuapp.com 
 # Flask and create-react-app
-
-##Clone the repo
 
 ## Requirements
 
