@@ -1,4 +1,4 @@
-#Link to Deployed App: jaymee-tictactoe.herokuapp.com 
+#Link to Deployed App: https://jaymee-tabletop-revamped.herokuapp.com/ 
 # Flask and create-react-app
 
 ## Requirements
